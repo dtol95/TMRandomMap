@@ -4,18 +4,18 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Royal Map Randomizer",
-  description: "Discover random Trackmania maps from your racing history with dramatic animations and year-based filtering.",
+  description: "Royal Map Randomizer - Get 5 random Royal Maps",
   keywords: ["Trackmania", "maps", "randomizer", "racing", "gaming"],
   openGraph: {
     title: "Royal Map Randomizer",
-    description: "Discover random Trackmania maps from your racing history",
+    description: "Royal Map Randomizer - Get 5 random Royal Maps",
     type: "website",
     // No image specified to prevent preview images
   },
   twitter: {
     card: "summary", // summary instead of summary_large_image
     title: "Royal Map Randomizer", 
-    description: "Discover random Trackmania maps from your racing history",
+    description: "Royal Map Randomizer - Get 5 random Royal Maps",
     // No image specified
   }
 }
