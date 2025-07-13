@@ -81,9 +81,31 @@ export default function TrackmaniaRandomizer() {
     }
   }
 
-  // Reroll all maps
+  // Animated reveal of maps one by one
+  const revealMapsWithAnimation = async (maps: TrackmaniaMap[]) => {
+    setIsRevealing(true)
+    setRevealedMaps([])
+    setSelectedMaps([])
+
+    for (let i = 0; i < maps.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 500)) // 500ms delay between reveals
+      setSelectedMaps(prev => [...prev, maps[i]])
+      setRevealedMaps(prev => [...prev, maps[i].uid])
+    }
+
+    setIsRevealing(false)
+  }
+
+  // Reroll all maps with animation or instant based on mode
   const rerollAllMaps = () => {
-    setSelectedMaps(getRandomMaps(5))
+    const newMaps = getRandomMaps(5)
+    
+    if (isAnimationEnabled) {
+      revealMapsWithAnimation(newMaps)
+    } else {
+      setSelectedMaps(newMaps)
+      setRevealedMaps(newMaps.map(m => m.uid))
+    }
   }
 
   // Handle year filter changes
@@ -100,19 +122,25 @@ export default function TrackmaniaRandomizer() {
   // Removed auto-loading of maps - now starts empty
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Trackmania Map Randomizer</h1>
-          <p className="text-muted-foreground">Discover random Trackmania maps from your history</p>
-        </header>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background text-foreground p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <header className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">Trackmania Map Randomizer</h1>
+            <p className="text-muted-foreground">Discover random Trackmania maps from your history</p>
+          </header>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
-          <Button onClick={rerollAllMaps} className="flex items-center gap-2" size="lg">
+          <Button 
+            onClick={rerollAllMaps} 
+            className="flex items-center gap-2" 
+            size="lg"
+            disabled={isRevealing}
+          >
             <Shuffle className="w-4 h-4" />
-            Reroll All Maps
+            {isRevealing ? 'Rolling...' : 'Reroll All Maps'}
           </Button>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -148,6 +176,27 @@ export default function TrackmaniaRandomizer() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          {/* Boring Mode Toggle */}
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="boring-mode"
+                    checked={!isAnimationEnabled}
+                    onCheckedChange={(checked) => setIsAnimationEnabled(!checked)}
+                  />
+                  <label htmlFor="boring-mode" className="text-sm font-medium">
+                    Boring Mode
+                  </label>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Turns off animations</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
 
         {/* Maps List */}
@@ -159,7 +208,11 @@ export default function TrackmaniaRandomizer() {
                 {selectedMaps.map((map, index) => (
                   <li
                     key={map.uid}
-                    className="group flex items-center justify-between p-3 rounded-md hover:bg-accent transition-colors"
+                    className={`group flex items-center justify-between p-3 rounded-md hover:bg-accent transition-all duration-300 ${
+                      isAnimationEnabled && revealedMaps.includes(map.uid) 
+                        ? 'animate-in slide-in-from-left-4 fade-in-0 scale-in-95' 
+                        : ''
+                    }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
@@ -189,9 +242,13 @@ export default function TrackmaniaRandomizer() {
               <Shuffle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">No Maps Selected</h3>
               <p className="text-muted-foreground mb-6">Click "Reroll All Maps" to get 5 random Trackmania maps</p>
-              <Button onClick={rerollAllMaps} className="flex items-center gap-2 mx-auto">
+              <Button 
+                onClick={rerollAllMaps} 
+                className="flex items-center gap-2 mx-auto"
+                disabled={isRevealing}
+              >
                 <Shuffle className="w-4 h-4" />
-                Get Random Maps
+                {isRevealing ? 'Rolling...' : 'Get Random Maps'}
               </Button>
             </div>
           </div>
@@ -208,5 +265,6 @@ export default function TrackmaniaRandomizer() {
         </div>
       </div>
     </div>
+    </TooltipProvider>
   )
 }

@@ -3,9 +3,21 @@ import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
-  generator: "v0.dev",
+  title: "Royal Map Randomizer",
+  description: "Discover random Trackmania maps from your racing history with dramatic animations and year-based filtering.",
+  keywords: ["Trackmania", "maps", "randomizer", "racing", "gaming"],
+  openGraph: {
+    title: "Royal Map Randomizer",
+    description: "Discover random Trackmania maps from your racing history",
+    type: "website",
+    // No image specified to prevent preview images
+  },
+  twitter: {
+    card: "summary", // summary instead of summary_large_image
+    title: "Royal Map Randomizer", 
+    description: "Discover random Trackmania maps from your racing history",
+    // No image specified
+  }
 }
 
 export default function RootLayout({
