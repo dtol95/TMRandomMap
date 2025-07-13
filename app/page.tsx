@@ -241,7 +241,7 @@ export default function TrackmaniaRandomizer() {
             <div className="bg-card rounded-lg border p-8">
               <Shuffle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">No Maps Selected</h3>
-              <p className="text-muted-foreground mb-6">Click "Reroll All Maps" to get 5 random Trackmania maps</p>
+              <p className="text-muted-foreground mb-6">Click "Get Random Maps" to get 5 random Trackmania maps</p>
               <Button 
                 onClick={rerollAllMaps} 
                 className="flex items-center gap-2 mx-auto"
